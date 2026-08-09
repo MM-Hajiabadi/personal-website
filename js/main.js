@@ -22,9 +22,11 @@ async function loadData() {
     const tables = ["profile","traits","education","experience","projects",
                      "publications","certifications","skills","skill_chips","links","socials"];
 
-    const results = await Promise.all(tables.map(t =>
-      client.from(t).select("*").order("order_index", { ascending: true })
-    ));
+    const results = await Promise.all(tables.map(t => {
+      let q = client.from(t).select("*");
+      if (t !== "profile") q = q.order("order_index", { ascending: true });
+      return q;
+    }));
 
     const data = {};
     tables.forEach((t, i) => {
